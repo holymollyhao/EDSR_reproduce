@@ -24,6 +24,22 @@ def res_block(input, num_filters, resblock_scaling):
   x = keras.layers.Add()[x, input]
   return x
 
+def upscale_block(input, num_filters, scale):
+  if scale == 2:
+    x = keras.layers.Conv2D(num_flilters * (scale ** 2), 3, padding = 'same')(input)
+    x = tf.nn.depth_to_space(x, scale)(x)
+
+  elif scale == 3:
+    x = keras.layers.Conv2D(num_flilters * (scale ** 2), 3, padding = 'same')(input)
+    x = tf.nn.depth_to_space(x, scale)(x)
+
+  elif scale ==4:
+    x = keras.layers.Conv2D(num_flilters * (scale ** 2), 3, padding = 'same')(input)
+    x = tf.nn.depth_to_space(x, scale)(x)
+
+  return x
+
+
 def edsr(scale = 2, num_filters = 64, num_resblocks = 16, resblock_scaling = None):
 
   input_image = keras.layers.Input(shape = (None, None, 3))
@@ -37,8 +53,10 @@ def edsr(scale = 2, num_filters = 64, num_resblocks = 16, resblock_scaling = Non
   x = keras.layers.Conv2D(num_filters, 3, padding = 'same')(x)
   x = keras.layers.Add()[x, x_orig]
 
-  ???
-
+  x = upscale_block(x, num_filters, scale)
+  
+  return Model(input_image, x)
+  
 
 
 
