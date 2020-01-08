@@ -3,68 +3,42 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 import tensorflow as tf
 from tensorflow import keras
 
-
 import numpy as np
 import matplotlib.pyplot as plt
 
 #resdiual 기본 블록
 
-def res_block(input_tensor, kernel_size, filters):
+def res_block(input, num_filters, resblock_scaling):
+
+  #first convolution filter
+  x = keras.layers.Conv2D(num_filters, 3, padding = 'same')(input)
   
-  # filters: tuple, 순서대로 필터 num
-  # kernel_size: tuple, kernel size 입력
-  # input_tensor: 텐서가 들어간다 
-
-
-  filters1, filters2 = filters
-
-  #first convolution filter, kernel_initializer는 optional
-  x = keras.layers.Conv2D(filters1, kernel_size,
-  				          padding ='same',
-                    #kernel_initializer='he_normal',
-                    #kernel_regularizer=regularizers.l2(L2_WEIGHT_DECAY)
-                    )(input_tensor)
   #relu
   x = keras.layers.Activation('relu')(x)
 
   #second convolution filter
-  x = keras.layers.Conv2D(filters2, kernel_size,
-                    padding='same',
-                    #kernel_initializer='he_normal',
-                    #kernel_regularizer=regularizers.l2(L2_WEIGHT_DECAY)
-                    )(x)
+  x = keras.layers.Conv2D(num_filters, 3, padding = 'same')(x)
 
   #residual scaling 
   x = x * 0.1 
-
-  x = keras.layers.Add()[x, input_tensor]
-
+  x = keras.layers.Add()[x, input]
   return x
 
-def edsr(input_tensor, scale, num_layers):
+def edsr(scale = 2, num_filters = 64, num_resblocks = 16, resblock_scaling = None):
 
-  kernel_size = (3, 3)
+  input_image = keras.layers.Input(shape = (None, None, 3))
 
-  #frist convolution
-  x = keras.layers.Conv2D(256, kernel_size,
-                    padding ='same',
-                    #kernel_initializer='he_normal',
-                    #kernel_regularizer=regularizers.l2(L2_WEIGHT_DECAY)
-                    )(input_tensor)
+  x = keras.layers.Conv2D(num_filters, 3, padding = 'same')(input_image)
+  x_orig = x
 
-  #save data for future addition
-  x_pre = x 
+  for i in range(num_resblocks):
+    x = res_block(x, num_filters, resblock_scaling)
 
-  #resblocks
-  for i in range(num_layers):
-    x = res_block(x, kernel_size, (256, 256))
-  
-  x = keras.layers.Conv2D(256, kernel_size,
-                    padding ='same',
-                    #kernel_initializer='he_normal',
-                    #kernel_regularizer=regularizers.l2(L2_WEIGHT_DECAY)
-                    )(x)
-  x = x + x_pre
+  x = keras.layers.Conv2D(num_filters, 3, padding = 'same')(x)
+  x = keras.layers.Add()[x, x_orig]
+
+  ???
+
 
 
 
