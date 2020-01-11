@@ -25,7 +25,7 @@ def res_block(input, num_filters, resblock_scaling):
 
   #residual scaling 
   x = x * 0.1 
-  x = keras.layers.Add()[x, input]
+  x = keras.layers.Add()([x, input])
   return x
 
 def upscale_block(input, num_filters, scale):
@@ -55,7 +55,7 @@ def edsr(scale = 2, num_filters = 64, num_resblocks = 16, resblock_scaling = Non
     x = res_block(x, num_filters, resblock_scaling)
 
   x = keras.layers.Conv2D(num_filters, 3, padding = 'same')(x)
-  x = keras.layers.Add()[x, x_orig]
+  x = keras.layers.Add()([x, x_orig])
 
   x = upscale_block(x, num_filters, scale)
   
