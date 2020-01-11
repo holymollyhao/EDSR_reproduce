@@ -59,7 +59,7 @@ def edsr(scale = 2, num_filters = 64, num_resblocks = 16, resblock_scaling = Non
 
   x = upscale_block(x, num_filters, scale)
   
-  return keras.models(input_image, x)
+  return keras.models.Model(input_image, x)
 
 train = DIV2K(scale=4, downgrade='bicubic', subset='train')
 train_ds = train.dataset(batch_size=16, random_transform=True)
