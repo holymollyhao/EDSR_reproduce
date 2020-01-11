@@ -50,7 +50,7 @@ def upscale_block(x, scale, num_filters):
     def upsample_1(x, factor, **kwargs):
         """Sub-pixel convolution."""
         x = keras.layers.Conv2D(num_filters * (factor ** 2), 3, padding='same', **kwargs)(x)
-        return keras.layers.Lambda(pixel_shuffle(scale=factor))(x)
+        return tf.nn.depth_to_space(x,scale)
 
     if scale == 2:
         x = upsample_1(x, 2, name='conv2d_1_scale_2')
