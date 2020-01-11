@@ -79,7 +79,7 @@ def edsr(scale = 2, num_filters = 64, num_resblocks = 16, resblock_scaling = Non
   x = keras.layers.Conv2D(num_filters, 3, padding = 'same')(x)
   x = keras.layers.Add()([x, x_orig])
 
-  x = upscale_block(x, num_filters, scale)
+  x = upscale_block(x, scale, num_filters)
   
   x = keras.layers.Conv2D(3, 3, padding='same')(x)
 
