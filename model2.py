@@ -24,7 +24,8 @@ def res_block(input, num_filters, resblock_scaling):
   x = keras.layers.Conv2D(num_filters, 3, padding = 'same')(x)
 
   #residual scaling 
-  x = keras.layers.Lambda(lambda t: t * resblock_scaling)(x)
+  if(resblock_scaling):
+    x = keras.layers.Lambda(lambda t: t * resblock_scaling)(x)
   x = keras.layers.Add()([x, input])
 
   return x
