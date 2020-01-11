@@ -66,7 +66,7 @@ train_ds = train.dataset(batch_size=16, random_transform=True)
 os.makedirs("~/weights", exist_ok = True)
 edsr_model = edsr(scale = 4, num_filters =64, num_resblocks =16, resblock_scaling = 0.1)
 print(tf.test.is_gpu_available())
-'''
+
 adam = keras.optimizers.Adam(learning_rate=0.001)
 
 edsr_model.compile(optimizer=adam,
@@ -74,9 +74,9 @@ edsr_model.compile(optimizer=adam,
               )
 edsr_model.fit(train_ds, epochs=300, steps_per_epoch=1000)
 
-model_edsr.save_weights(os.path.join("/weights", 'weights-edsr-16-x4.h5'))
+model_edsr.save_weights(os.path.join("~/weights", 'weights-edsr-16-x4.h5'))
 
-'''
+
 
 
 
