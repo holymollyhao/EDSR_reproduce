@@ -30,15 +30,15 @@ def res_block(input, num_filters, resblock_scaling):
 
 def upscale_block(input, num_filters, scale):
   if scale == 2:
-    x = keras.layers.Conv2D(num_flilters * (scale ** 2), 3, padding = 'same')(input)
+    x = keras.layers.Conv2D(num_filters * (scale ** 2), 3, padding = 'same')(input)
     x = tf.nn.depth_to_space(x, scale)(x)
 
   elif scale == 3:
-    x = keras.layers.Conv2D(num_flilters * (scale ** 2), 3, padding = 'same')(input)
+    x = keras.layers.Conv2D(num_filters * (scale ** 2), 3, padding = 'same')(input)
     x = tf.nn.depth_to_space(x, scale)(x)
 
   elif scale ==4:
-    x = keras.layers.Conv2D(num_flilters * (scale ** 2), 3, padding = 'same')(input)
+    x = keras.layers.Conv2D(num_filters * (scale ** 2), 3, padding = 'same')(input)
     x = tf.nn.depth_to_space(x, scale)(x)
 
   return x
