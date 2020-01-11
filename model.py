@@ -13,6 +13,7 @@ import os
 #resdiual 
 
 def res_block(input, num_filters, resblock_scaling):
+  input = keras.layers.Input(shape=(None, None, 3))
 
   #first convolution filter
   x = keras.layers.Conv2D(num_filters, 3, padding = 'same')(input)
@@ -26,8 +27,9 @@ def res_block(input, num_filters, resblock_scaling):
   #residual scaling 
   x = x * 0.1 
   x = keras.layers.Add()([x, input])
-  return x
 
+  return x
+'''
 def upscale_block(input, num_filters, scale):
   if scale == 2:
     x = keras.layers.Conv2D(num_filters * (scale ** 2), 3, padding = 'same')(input)
@@ -39,10 +41,30 @@ def upscale_block(input, num_filters, scale):
 
   elif scale ==4:
     x = keras.layers.Conv2D(num_filters * (scale ** 2), 3, padding = 'same')(input)
-    x = keras.layers.Lambda(tf.nn.depth_to_space(x, scale))(x)
+    x = tf.nn.depth_to_space(x, scale)
 
   return x
+'''
 
+def upscale_block(x, scale, num_filters):
+    def upsample_1(x, factor, **kwargs):
+        """Sub-pixel convolution."""
+        x = keras.layers.Conv2D(num_filters * (factor ** 2), 3, padding='same', **kwargs)(x)
+        return keras.layers.Lambda(pixel_shuffle(scale=factor))(x)
+
+    if scale == 2:
+        x = upsample_1(x, 2, name='conv2d_1_scale_2')
+    elif scale == 3:
+        x = upsample_1(x, 3, name='conv2d_1_scale_3')
+    elif scale == 4:
+        x = upsample_1(x, 2, name='conv2d_1_scale_2')
+        x = upsample_1(x, 2, name='conv2d_2_scale_2')
+
+    return x
+
+
+def pixel_shuffle(scale):
+    return lambda x: tf.nn.depth_to_space(x, scale)
 
 def edsr(scale = 2, num_filters = 64, num_resblocks = 16, resblock_scaling = None):
 
