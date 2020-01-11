@@ -80,6 +80,6 @@ edsr_model.compile(optimizer=adam,
               )
 edsr_model.fit(train_ds, epochs=300, steps_per_epoch=1000)
 
-model_edsr.save_weights(os.path.join("~/weights", 'weights-edsr-16-x4.h5'))
+edsr_model.save_weights(os.path.join("~/weights", 'weights-edsr-16-x4.h5'))
 
 
