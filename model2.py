@@ -44,33 +44,14 @@ def upscale_block(input, scale, num_filters):
     x = keras.layers.Lambda(lambda x: tf.nn.depth_to_space(x, scale))(x)
 
   return x
-'''
-
-def upscale_block(x, scale, num_filters):
-    def upsample_1(x, factor, **kwargs):
-        """Sub-pixel convolution."""
-        x = keras.layers.Conv2D(num_filters * (factor ** 2), 3, padding='same', **kwargs)(x)
-        return keras.layers.Lambda(tf.nn.depth_to_space(x,scale))(x)
-
-    if scale == 2:
-        x = upsample_1(x, 2, name='conv2d_1_scale_2')
-    elif scale == 3:
-        x = upsample_1(x, 3, name='conv2d_1_scale_3')
-    elif scale == 4:
-        x = upsample_1(x, 2, name='conv2d_1_scale_2')
-        x = upsample_1(x, 2, name='conv2d_2_scale_2')
-
-    return x
-'''
-
-def pixel_shuffle(scale):
-    return lambda x: tf.nn.depth_to_space(x, scale)
 
 def edsr(scale = 2, num_filters = 64, num_resblocks = 16, resblock_scaling = None):
 
   input_image = keras.layers.Input(shape = (None, None, 3))
 
-  x = keras.layers.Conv2D(num_filters, 3, padding = 'same')(input_image)
+  x = Lambda(lamda x: x / 255.0)(input_image)
+
+  x = keras.layers.Conv2D(num_filters, 3, padding = 'same')(x)
   x_orig = x
 
   for i in range(num_resblocks):
@@ -83,6 +64,7 @@ def edsr(scale = 2, num_filters = 64, num_resblocks = 16, resblock_scaling = Non
   
   x = keras.layers.Conv2D(3, 3, padding='same')(x)
 
+  x = Lambda(lamda x: x * 255.0)(x)
   return keras.models.Model(input_image, x)
 
 train = DIV2K(scale=4, downgrade='bicubic', subset='train')
