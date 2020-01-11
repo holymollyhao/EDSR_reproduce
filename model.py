@@ -93,7 +93,7 @@ from tensorflow.keras.layers import Add, Conv2D, Input, Lambda
 from tensorflow.keras.models import Model
 import numpy as np
 import matplotlib.pyplot as plt
-
+from tensorflow import keras
 from data import DIV2K
 import os
 
