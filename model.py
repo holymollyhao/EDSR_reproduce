@@ -13,7 +13,6 @@ import os
 #resdiual 
 
 def res_block(input, num_filters, resblock_scaling):
-  input = keras.layers.Input(shape=(None, None, 3))
 
   #first convolution filter
   x = keras.layers.Conv2D(num_filters, 3, padding = 'same')(input)
