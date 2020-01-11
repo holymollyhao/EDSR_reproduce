@@ -80,6 +80,8 @@ def edsr(scale = 2, num_filters = 64, num_resblocks = 16, resblock_scaling = Non
 
   x = upscale_block(x, num_filters, scale)
   
+  x = keras.layers.Conv2D(3, 3, padding='same')(x)
+  
   return keras.models.Model(input_image, x)
 
 train = DIV2K(scale=4, downgrade='bicubic', subset='train')
