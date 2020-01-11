@@ -11,7 +11,7 @@ from data import DIV2K
 import os
 
 
-#resdiual 기본 블록
+#resdiual 
 
 def res_block(input, num_filters, resblock_scaling):
 
