@@ -29,19 +29,19 @@ def res_block(input, num_filters, resblock_scaling):
   x = keras.layers.Add()([x, input])
 
   return x
-'''
-def upscale_block(input, num_filters, scale):
+
+def upscale_block(input, scale, num_filters):
   if scale == 2:
     x = keras.layers.Conv2D(num_filters * (scale ** 2), 3, padding = 'same')(input)
-    x = keras.layers.Lambda(tf.nn.depth_to_space(x, scale))(x)
+    x = keras.layers.Lambda(lambda x: tf.nn.depth_to_space(x, scale))(x)
 
   elif scale == 3:
     x = keras.layers.Conv2D(num_filters * (scale ** 2), 3, padding = 'same')(input)
-    x = keras.layers.Lambda(tf.nn.depth_to_space(x, scale))(x)
+    x = keras.layers.Lambda(lambda x: tf.nn.depth_to_space(x, scale))(x)
 
   elif scale ==4:
     x = keras.layers.Conv2D(num_filters * (scale ** 2), 3, padding = 'same')(input)
-    x = tf.nn.depth_to_space(x, scale)
+    x = keras.layers.Lambda(lambda x: tf.nn.depth_to_space(x, scale))(x)
 
   return x
 '''
@@ -50,7 +50,7 @@ def upscale_block(x, scale, num_filters):
     def upsample_1(x, factor, **kwargs):
         """Sub-pixel convolution."""
         x = keras.layers.Conv2D(num_filters * (factor ** 2), 3, padding='same', **kwargs)(x)
-        return tf.nn.depth_to_space(x,scale)
+        return keras.layers.Lambda(tf.nn.depth_to_space(x,scale))(x)
 
     if scale == 2:
         x = upsample_1(x, 2, name='conv2d_1_scale_2')
@@ -61,7 +61,7 @@ def upscale_block(x, scale, num_filters):
         x = upsample_1(x, 2, name='conv2d_2_scale_2')
 
     return x
-
+'''
 
 def pixel_shuffle(scale):
     return lambda x: tf.nn.depth_to_space(x, scale)
