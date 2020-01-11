@@ -67,7 +67,7 @@ def pixel_shuffle(scale):
 
 def edsr(scale = 2, num_filters = 64, num_resblocks = 16, resblock_scaling = None):
 
-  input_image = keras.layers.Input(shape = (None, None, 3))
+  input_image = keras.layers.Input(shape = (24, 24, 3))
 
   x = keras.layers.Conv2D(num_filters, 3, padding = 'same')(input_image)
   x_orig = x
@@ -81,7 +81,7 @@ def edsr(scale = 2, num_filters = 64, num_resblocks = 16, resblock_scaling = Non
   x = upscale_block(x, num_filters, scale)
   
   x = keras.layers.Conv2D(3, 3, padding='same')(x)
-  
+
   return keras.models.Model(input_image, x)
 
 train = DIV2K(scale=4, downgrade='bicubic', subset='train')
