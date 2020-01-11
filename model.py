@@ -161,7 +161,7 @@ def denormalize(x):
 train = DIV2K(scale=4, downgrade='bicubic', subset='train')
 train_ds = train.dataset(batch_size=16, random_transform=True)
 os.makedirs("~/weights", exist_ok = True)
-edsr_model = edsr(scale = 4, num_filters =64, num_resblocks =16, resblock_scaling = 0.1)
+edsr_model = edsr(scale=4, num_res_blocks=16)
 print(tf.test.is_gpu_available())
 
 adam = keras.optimizers.Adam(learning_rate=0.001)
