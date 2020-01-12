@@ -10,30 +10,7 @@ from data import DIV2K
 import os
 
 from model import resolve_single
-from utils import load_image
-
-%matplotlib inline
-
-def resolve_and_plot(model_pre_trained, model_fine_tuned, lr_image_path):
-    lr = load_image(lr_image_path)
-    
-    sr_pt = resolve_single(model_pre_trained, lr)
-    sr_ft = resolve_single(model_fine_tuned, lr)
-    
-    plt.figure(figsize=(20, 20))
-    
-    model_name = model_pre_trained.name.upper()
-    images = [lr, sr_pt, sr_ft]
-    titles = ['LR', f'SR ({model_name}, pixel loss)', f'SR ({model_name}, perceptual loss)']
-    positions = [1, 3, 4]
-    
-    for i, (image, title, position) in enumerate(zip(images, titles, positions)):
-        plt.subplot(2, 2, position)
-        plt.imshow(image)
-        plt.title(title)
-        plt.xticks([])
-        plt.yticks([])
-        
+from utils import load_image      
 
 #resdiual 
 
@@ -99,7 +76,9 @@ edsr_model = edsr(scale=4, num_resblocks=16)
 edsr_model.load_weights(os.path.join("~/weights", 'weights-edsr-16-x4.h5'))
 edsr_model.save('edsr_model.h5')
 edsr_model.summary()
-resolve_and_plot(edsr_pre_trained, 'demo/0869x4-crop.png')
+
+
+
 '''
 print(tf.test.is_gpu_available())
 
