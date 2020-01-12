@@ -1,7 +1,7 @@
 import cv2
 import math
 
-videoFile = "960p_s0_d60.webm"
+videoFile = "240p_s0_d60.webm"
 imagesFolder = "/"
 vidcap = cv2.VideoCapture(videoFile)
 print(vidcap.get(cv2.CAP_PROP_FPS))
@@ -11,8 +11,8 @@ while(vidcap.isOpened()):
  
     if(int(vidcap.get(1)) % 30 == 0):
         print('Saved frame number : ' + str(int(vidcap.get(1))))
-        cv2.imwrite("frame%d.jpg" % count, image)
-        print('Saved frame%d.jpg' % count)
+        cv2.imwrite("frame%d.png" % count, image)
+        print('Saved frame%d.png' % count)
         count += 1
 vidcap.release()
 
