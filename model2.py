@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 
 from data import DIV2K
 import os
+import Image
 import matplotlib.image as mpimg
 #resdiual 
 
