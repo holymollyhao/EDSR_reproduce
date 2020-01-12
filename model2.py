@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 from data import DIV2K
 import os
 import cv2
-
+import matplotlib.image as mpimg
 #resdiual 
 
 def res_block(input, num_filters, resblock_scaling):
@@ -76,7 +76,7 @@ edsr_model = edsr(scale=4, num_resblocks=16)
 edsr_model.load_weights(os.path.join("~/weights", 'weights-edsr-16-x4.h5'))
 edsr_model.summary()
 test_img = tf.io.read_file("./dataset/images240/frame0.jpg")
-edsr_model.predict(cv2.imread("./dataset/images240/frame0.jpg"))
+edsr_model.predict(mping.imread("./dataset/images240/frame0.jpg"))
 
 
 
