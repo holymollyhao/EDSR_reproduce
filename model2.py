@@ -9,9 +9,6 @@ import matplotlib.pyplot as plt
 from data import DIV2K
 import os
 
-from model import resolve_single
-from utils import load_image      
-
 #resdiual 
 
 def res_block(input, num_filters, resblock_scaling):
