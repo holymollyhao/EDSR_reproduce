@@ -73,11 +73,11 @@ def edsr(scale = 2, num_filters = 64, num_resblocks = 16, resblock_scaling = Non
 train = DIV2K(scale=4, downgrade='bicubic', subset='train')
 train_ds = train.dataset(batch_size=16, random_transform=True)
 os.makedirs("~/weights", exist_ok = True)
-'''
+
 edsr_model = edsr(scale=4, num_resblocks=16)
 edsr_model.load_model('edsr_model.h5')
 edsr_model.summary()
 test_img = plt.imread("./dataset/images240/frame0.jpg")
-
+'''
 
 
