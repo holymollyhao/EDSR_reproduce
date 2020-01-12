@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 
 from data import DIV2K
 import os
+import cv2
 
 #resdiual 
 
@@ -75,7 +76,7 @@ edsr_model = edsr(scale=4, num_resblocks=16)
 edsr_model.load_weights(os.path.join("~/weights", 'weights-edsr-16-x4.h5'))
 edsr_model.summary()
 test_img = tf.io.read_file("./dataset/images240/frame0.jpg")
-edsr_model.predict(test_img)
+edsr_model.predict(cv2.imread("./dataset/images240/frame0.jpg"))
 
 
 
