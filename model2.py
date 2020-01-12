@@ -79,17 +79,3 @@ edsr_model.summary()
 test_img = plt.imread("./dataset/images240/frame0.jpg")
 plt.imshow(edsr_model.predict(test_img))
 
-
-'''
-print(tf.test.is_gpu_available())
-
-adam = keras.optimizers.Adam(learning_rate=0.001)
-
-edsr_model.compile(optimizer=adam,
-              loss='mean_absolute_error',
-              )
-edsr_model.fit(train_ds, epochs=300, steps_per_epoch=1000)
-
-edsr_model.save_weights(os.path.join("~/weights", 'weights-edsr-16-x4.h5'))
-
-'''
