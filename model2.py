@@ -72,7 +72,7 @@ train_ds = train.dataset(batch_size=16, random_transform=True)
 os.makedirs("~/weights", exist_ok = True)
 edsr_model = edsr(scale=4, num_resblocks=16)
 edsr_model.load_weights(os.path.join("~/weights", 'weights-edsr-16-x4.h5'))
-
+edsr_model.save('edsr_model.h5')
 '''
 print(tf.test.is_gpu_available())
 
