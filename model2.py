@@ -74,7 +74,7 @@ os.makedirs("~/weights", exist_ok = True)
 edsr_model = edsr(scale=4, num_resblocks=16)
 edsr_model.load_weights(os.path.join("~/weights", 'weights-edsr-16-x4.h5'))
 edsr_model.summary()
-edsr_model.predict(mpimg.imread("./dataset/images240/frame5.png"))
+edsr_model.predict(np.expand_dims(mpimg.imread("./dataset/images240/frame5.png"), axis=0))
 
 
 
