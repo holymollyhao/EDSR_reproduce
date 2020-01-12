@@ -5,7 +5,8 @@ from tensorflow import keras
 
 import numpy as np
 import matplotlib.pyplot as plt
-
+import matplotlib
+matplotlib.use('GTK')
 from data import DIV2K
 import os
 import matplotlib.image as mpimg
