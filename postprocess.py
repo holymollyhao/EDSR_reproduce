@@ -2,25 +2,8 @@ import cv2
 import math
 import os
 import glob
-from input_output import *
 
-def vidtoimage(videopath, imgpath):
-    vidcap = cv2.VideoCapture(videopath)
-    count = 0
-    print("dd")
-    print(os.path.exists(imgpath))
-    if( not os.path.exists(imgpath)):   
-        os.makedirs(imgpath)
-        while vidcap.isOpened():
-            success, image = vidcap.read()
-            if success:
-                cv2.imwrite(os.path.join(imgpath, '%d.png') % count, image)
-                print("vidtoimage #"+str(count))
-                count += 1
-            else:
-                break
-        cv2.destroyAllWindows()
-        vidcap.release()
+from input_output import *
 
 def image_srall(model, input_imgpath, output_imgpath):
     count = 0 
