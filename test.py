@@ -1,6 +1,6 @@
 import imageio
 import matplotlib.pyplot as plt
-
+import cv2
 
 from input_output import *
 from EDSR import *
@@ -19,13 +19,27 @@ train_vid_ds = train_vid.dataset(batch_size=16, random_transform=True)
 
 edsr_model = load_edsr_model(scale = 4, batch_size = 64, num_resblocks = 20, num_filters = 32, resblock_scaling = 0.1)
 nas_model = load_nas_model(scale = 4, batch_size = 64, num_resblocks = 20, num_filters = 32, resblock_scaling = 0.1)
+train_agian_model = edsr_to_nas_model(scale = 4, batch_size = 64, num_resblocks = 20, num_filters = 32, resblock_scaling = 0.1)
 
-image_srall(nas_model, "./dataset/testimages240", "./dataset/outputimages_sr_nas240")
-imagetovid("./dataset/outputimages_sr_nas240", "./dataset", "output2.webm", 30)
+image_srall(train_agian_model, "./dataset/testimages240", "./dataset/outputimages_sr_finetune240")
+imagetovid("./dataset/outputimages_sr_finetune240", "./dataset", "output3.webm", 30)
 
-'''image_srall(edsr_model, "./dataset/testimages240", "./dataset/outputimages_sr240")
-imagetovid("./dataset/outputimages_sr240", "./dataset", "output.webm", 30)'''
+print("EDSR model output:")
+print("PSNR:")
+print(tf.image.psnr(load_image('./dataset/images/VIDEO_train_HR/0000.png'), load_image('./dataset/outputimages_sr240/0.png')[...,:3],max_val=255))
+print("SSIM:")
+print(tf.image.ssim(tf.convert_to_tensor(load_image('./dataset/images/VIDEO_train_HR/0000.png')), tf.convert_to_tensor(load_image('./dataset/outputimages_sr240/0.png')[...,:3]),max_val=255))
 
-'''vidtoimage("./dataset/240p_s0_d60.webm", "./dataset/outputimages240")
-image_srall(edsr_model, "./dataset/outputimages240", "./dataset/outputimages_sr240")
-imagetovid("./dataset/outputimages_sr240", "./dataset", "output.webm", 30)'''
+
+print("NAS model output:")
+print("PSNR:")
+print(tf.image.psnr(load_image('./dataset/images/VIDEO_train_HR/0000.png'), load_image('./dataset/outputimages_sr_nas240/0.png')[...,:3],max_val=255))
+print("SSIM:")
+print(tf.image.ssim(tf.convert_to_tensor(load_image('./dataset/images/VIDEO_train_HR/0000.png')), tf.convert_to_tensor(load_image('./dataset/outputimages_sr_nas240/0.png')[...,:3]),max_val=255))
+
+print("Fine-Tune model output:")
+print("PSNR:")
+print(tf.image.psnr(load_image('./dataset/images/VIDEO_train_HR/0000.png'), load_image('./dataset/outputimages_sr_finetune240/0.png')[...,:3],max_val=255))
+print("SSIM:")
+print(tf.image.ssim(tf.convert_to_tensor(load_image('./dataset/images/VIDEO_train_HR/0000.png')), tf.convert_to_tensor(load_image('./dataset/outputimages_sr_finetune240/0.png')[...,:3]),max_val=255))
+
