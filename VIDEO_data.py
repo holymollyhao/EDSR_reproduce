@@ -43,7 +43,6 @@ class VIDEO:
             self.downgrade = downgrade
         else:
             self.downgrade = downgrade
-            self._ntire_2018 = False
 
         self.subset = subset
         self.images_dir = images_dir
@@ -56,6 +55,7 @@ class VIDEO:
         return len(self.image_ids)
 
     def dataset(self, batch_size=16, repeat_count=None, random_transform=True):
+        print(self._hr_images_dir)
         ds = tf.data.Dataset.zip((self.lr_dataset(), self.hr_dataset()))
         if random_transform:
             ds = ds.map(lambda lr, hr: random_crop(lr, hr, scale=self.scale), num_parallel_calls=AUTOTUNE)
@@ -68,7 +68,7 @@ class VIDEO:
 
     def hr_dataset(self):
         if not os.path.exists(self._hr_images_dir()):
-            vidtoimage("./dataset/960p_s0_d60.webm", self._hr_images_dir, fps = 30)
+            vidtoimage("./dataset/960p_s0_d60.webm", self._hr_images_dir(), fps = 30)
 
         ds = self._images_dataset(self._hr_image_files()).cache(self._hr_cache_file())
 
@@ -79,7 +79,7 @@ class VIDEO:
 
     def lr_dataset(self):
         if not os.path.exists(self._lr_images_dir()):
-            vidtoimage("./dataset/240p_s0_d60.webm", self._lr_images_dir, fps = 30)
+            vidtoimage("./dataset/240p_s0_d60.webm", self._lr_images_dir(), fps = 30, scale = self.scale)
 
         ds = self._images_dataset(self._lr_image_files()).cache(self._lr_cache_file())
 
@@ -109,19 +109,13 @@ class VIDEO:
         return [os.path.join(images_dir, self._lr_image_file(image_id)) for image_id in self.image_ids]
 
     def _lr_image_file(self, image_id):
-        if not self._ntire_2018 or self.scale == 8:
-            return f'{image_id:04}x{self.scale}.png'
-        else:
-            return f'{image_id:04}x{self.scale}{self.downgrade[0]}.png'
+        return f'{image_id:04}x{self.scale}.png'
 
-    def _hr_images_dir(self):
+    def _hr_images_dir(self): 
         return os.path.join(self.images_dir, f'VIDEO_{self.subset}_HR')
 
     def _lr_images_dir(self):
-        if self._ntire_2018:
-            return os.path.join(self.images_dir, f'VIDEO_{self.subset}_LR_{self.downgrade}')
-        else:
-            return os.path.join(self.images_dir, f'VIDEO_{self.subset}_LR_{self.downgrade}', f'X{self.scale}')
+        return os.path.join(self.images_dir, f'VIDEO_{self.subset}_LR_{self.downgrade}')
 
     
     def _hr_images_archive(self):
@@ -183,10 +177,10 @@ def random_rotate(lr_img, hr_img):
 #  IO
 # -----------------------------------------------------------
 
-def vidtoimage(videopath, imgpath, fps = 1):
+def vidtoimage(videopath, imgpath, fps = 1, scale = None):
     vidcap = cv2.VideoCapture(videopath)
     count = 0
-    print("dd")
+    print(str(imgpath))
     print(os.path.exists(imgpath))
     if( not os.path.exists(imgpath)):   
         os.makedirs(imgpath)
@@ -194,8 +188,12 @@ def vidtoimage(videopath, imgpath, fps = 1):
             success, image = vidcap.read()
             if success:
                 if(count%fps == 0):
-                    cv2.imwrite(os.path.join(imgpath, '%d.png') % (count//fps), image)
-                    print("vidtoimage #"+str(count))
+                    if scale:
+                        cv2.imwrite(os.path.join(imgpath, '%04d'+'x'+str(scale)+'.png') % (count//fps), image)
+                        print("vidtoimage #"+str(count))
+                    else:
+                        cv2.imwrite(os.path.join(imgpath, '%04d.png') % (count//fps), image)
+                        print("vidtoimage #"+str(count))
                 count += 1
             else:
                 break
