@@ -61,7 +61,9 @@ class VIDEO:
             ds = ds.map(lambda lr, hr: random_crop(lr, hr, scale=self.scale), num_parallel_calls=AUTOTUNE)
             ds = ds.map(random_rotate, num_parallel_calls=AUTOTUNE)
             ds = ds.map(random_flip, num_parallel_calls=AUTOTUNE)
-        ds = ds.batch(batch_size)
+        
+        if(batch_size != None):
+            ds = ds.batch(batch_size)
         ds = ds.repeat(repeat_count)
         ds = ds.prefetch(buffer_size=AUTOTUNE)
         return ds
@@ -144,7 +146,7 @@ class VIDEO:
 # -----------------------------------------------------------
 
 
-def random_crop(lr_img, hr_img, hr_crop_size=96, scale=2):
+def random_crop(lr_img, hr_img, hr_crop_size=64, scale=2):
     lr_crop_size = hr_crop_size // scale
     lr_img_shape = tf.shape(lr_img)[:2]
 
