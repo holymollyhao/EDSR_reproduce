@@ -8,42 +8,29 @@ from postprocess import *
 from VIDEO_data import *
 from preprocess import *
 
+#loading models with class model
+edsr_model = MODEL(scale = 4,
+                 model_type = "edsr",
+                 batch_size = 64,
+                 num_resblocks = 16,
+                 num_filters = 64,
+                 resblock_scaling = 0.1).train(data = "div2k", epochs = 300, steps_per_epoch = 1000, learning_rate =  1e-4, validation_steps = 60)
 
+nas_edsr_model = MODEL(scale = 4,
+                 model_type = "nas-edsr",
+                 batch_size = 64,
+                 num_resblocks = 20,
+                 num_filters = 32,
+                 resblock_scaling = 0.1).train(data = "vid", epochs = 240, steps_per_epoch = 850, learning_rate =  1e-4, validation_steps = 60)
 
+#using functions to output sr-ed images
+image_srall(edsr_model, "./dataset/testimages240", "./dataset/outputimages_sr_final1")
+image_srall(nas_model, "./dataset/testimages240", "./dataset/outputimages_sr_final2")
 
-train = DIV2K(scale=4, downgrade='bicubic', subset='train')
-train_ds = train.dataset(batch_size=64, random_transform=True)
+#using functions to create videos
+imagetovid("./dataset/outputimages_sr_final1", "", "output_final1.webm", 30)
+imagetovid("./dataset/outputimages_sr_final2", "", "output_final2.webm", 30)
 
-train_vid = VIDEO(scale=4, downgrade='bicubic', subset='train')
-train_vid_ds = train_vid.dataset(batch_size=64, random_transform=True)
-
-nas_model = load_nas_model(scale = 4, batch_size = 64, num_resblocks = 20, num_filters = 32, resblock_scaling = 0.1)
-
-
-'''
-edsr_model = load_edsr_model(scale = 4, batch_size = 64, num_resblocks = 20, num_filters = 32, resblock_scaling = 0.1)
-nas_model = load_nas_model(scale = 4, batch_size = 64, num_resblocks = 20, num_filters = 32, resblock_scaling = 0.1)
-train_again_model = edsr_to_nas_model(scale = 4, batch_size = 64, num_resblocks = 20, num_filters = 32, resblock_scaling = 0.1)
-
-print('\n')
-print("EDSR model output:")
-print("PSNR:")
-print(tf.image.psnr(load_image('./dataset/images/VIDEO_train_HR/0000.png'), load_image('./dataset/outputimages_sr240/0.png')[...,:3],max_val=255))
-print("SSIM:")
-print(tf.image.ssim(tf.convert_to_tensor(load_image('./dataset/images/VIDEO_train_HR/0000.png')), tf.convert_to_tensor(load_image('./dataset/outputimages_sr240/0.png')[...,:3]),max_val=255))
-print('\n')
-
-print("NAS model output:")
-print("PSNR:")
-print(tf.image.psnr(load_image('./dataset/images/VIDEO_train_HR/0000.png'), load_image('./dataset/outputimages_sr_nas240/0.png')[...,:3],max_val=255))
-print("SSIM:")
-print(tf.image.ssim(tf.convert_to_tensor(load_image('./dataset/images/VIDEO_train_HR/0000.png')), tf.convert_to_tensor(load_image('./dataset/outputimages_sr_nas240/0.png')[...,:3]),max_val=255))
-print('\n')
-
-print("Fine-Tune model output:")
-print("PSNR:")
-print(tf.image.psnr(load_image('./dataset/images/VIDEO_train_HR/0000.png'), load_image('./dataset/outputimages_sr_finetune240/0.png')[...,:3],max_val=255))
-print("SSIM:")
-print(tf.image.ssim(tf.convert_to_tensor(load_image('./dataset/images/VIDEO_train_HR/0000.png')), tf.convert_to_tensor(load_image('./dataset/outputimages_sr_finetune240/0.png')[...,:3]),max_val=255))
-print('\n')
-'''
+#psnr, ssim results of models
+print_output("edsr", "./dataset/images/VIDEO_train_HR", "./dataset/outputimages_sr_final1")
+print_output("nas-edsr", "./dataset/images/VIDEO_train_HR", "./dataset/outputimages_sr_final2")

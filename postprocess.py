@@ -58,4 +58,15 @@ def imagetovid(imgpath, vidpath, vidname, fps):
     
     out.release()
 
+
+def print_output(model_type, validation_image_input,  validation_image_output): 
+
+    print('\n')
+    print(f'{model_type} model output:')
+    print("PSNR:", end='')
+    tf.Print(tf.image.psnr(load_image(validation_image_input +'/0000.png'), load_image(validation_image_output+'/0.png')[...,:3],max_val=255))
+    print("SSIM:", end='')
+    tf.Print(tf.image.ssim(tf.convert_to_tensor(load_image(validation_image_input+'/0000.png')), tf.convert_to_tensor(load_image(validation_image_input+'/0.png')[...,:3]),max_val=255))
+    print('\n')
+
     
