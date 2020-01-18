@@ -25,7 +25,7 @@ nas_edsr_model = MODEL(scale = 4,
 
 #using functions to output sr-ed images
 image_srall(edsr_model, "./dataset/testimages240", "./dataset/outputimages_sr_final1")
-image_srall(nas_model, "./dataset/testimages240", "./dataset/outputimages_sr_final2")
+image_srall(nas_edsr_model, "./dataset/testimages240", "./dataset/outputimages_sr_final2")
 
 #using functions to create videos
 imagetovid("./dataset/outputimages_sr_final1", "", "output_final1.webm", 30)
