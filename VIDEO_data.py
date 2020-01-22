@@ -28,8 +28,8 @@ class VIDEO:
         else:
             raise ValueError("subset must be 'train' or 'valid'")
 
-        _downgrades_a = ['bicubic', 'unknown']
-        _downgrades_b = ['mild', 'difficult']
+        _downgrades_a = ['bicubic']
+        _downgrades_b = ['bilin']
 
         if scale == 8 and downgrade != 'bicubic':
             raise ValueError(f'scale 8 only allowed for bicubic downgrade')
@@ -41,6 +41,7 @@ class VIDEO:
             self.downgrade = 'x8'
         elif downgrade in _downgrades_b:
             self.downgrade = downgrade
+            bilin_resize(self.hr_images_dir, self._lr_images_dir)
         else:
             self.downgrade = downgrade
 
@@ -61,7 +62,6 @@ class VIDEO:
             ds = ds.map(lambda lr, hr: random_crop(lr, hr, scale=self.scale), num_parallel_calls=AUTOTUNE)
             ds = ds.map(random_rotate, num_parallel_calls=AUTOTUNE)
             ds = ds.map(random_flip, num_parallel_calls=AUTOTUNE)
-        
         if(batch_size != None):
             ds = ds.batch(batch_size)
         ds = ds.repeat(repeat_count)
@@ -146,7 +146,7 @@ class VIDEO:
 # -----------------------------------------------------------
 
 
-def random_crop(lr_img, hr_img, hr_crop_size=64, scale=2):
+def random_crop(lr_img, hr_img, hr_crop_size=256, scale=2):
     lr_crop_size = hr_crop_size // scale
     lr_img_shape = tf.shape(lr_img)[:2]
 
@@ -201,3 +201,14 @@ def vidtoimage(videopath, imgpath, fps = 1, scale = None):
                 break
         cv2.destroyAllWindows()
         vidcap.release()
+
+def bilin_resize(hr_images_dir, outputpath):
+    print(os.path.join(hr_images_dir, "%4d.png" )%(0))
+    if not os.path.exists(os.path.join(hr_images_dir, "%4d.png" )%(0)):
+        os.makedirs(outputpath, exist_ok = True)
+        for i in range(60):
+            img = cv2.imread(os.path.join(hr_images_dir, "%04d.png" )%(i))
+            print(img)
+            res = cv2.resize(img, dsize=(426, 240), interpolation=cv2.INTER_LINEAR)
+            cv2.imwrite(os.path.join(outputpath, "%04dx4.png")%(i), res)
+            
