@@ -1,6 +1,7 @@
 import imageio
 import os
 import tensorflow as tf
+import shutil
 
 from input_output import *
 from EDSR import *
@@ -93,7 +94,10 @@ class MODEL:
             print("model loaded")
         else :
             optim_edsr = optim_edsr = tf.optimizers.Adam(learning_rate= tf.optimizers.schedules.PiecewiseConstantDecay(boundaries=[200000], values=[learning_rate, learning_rate / 2]))
-        
+            
+            if os.path.exists(os.path.join("parameters/graph", f'graphs-{self.model_type}-{self.num_resblocks}-x{self.scale}')):     
+                shutil.rmtree(os.path.join("parameters/graph", f'graphs-{self.model_type}-{self.num_resblocks}-x{self.scale}'))
+            
             tb_hist = keras.callbacks.TensorBoard(log_dir=os.path.join("parameters/graph", f'graphs-{self.model_type}-{self.num_resblocks}-x{self.scale}'), update_freq=100000, write_graph=True, write_images=True)
             cust_hist = CustomHistory()
 
@@ -103,12 +107,12 @@ class MODEL:
             self.model.save_weights(os.path.join("parameters/weights", f'weights-{self.model_type}-{self.num_resblocks}-x{self.scale}.h5'))
 
             os.makedirs(f"./trainhistory/{self.model_type}", exist_ok = True)
-            np.savetxt(f"./trainhistory/{self.model_type}" + "train_loss.txt", cust_hist.train_loss, fmt="%s")
-            np.savetxt(f"./trainhistory/{self.model_type}" + "val_loss.txt", cust_hist.val_loss, fmt="%s")
-            np.savetxt(f"./trainhistory/{self.model_type}" + "train_acc.txt", cust_hist.train_acc, fmt="%s")
-            np.savetxt(f"./trainhistory/{self.model_type}" + "val_acc.txt", cust_hist.val_acc, fmt="%s")
-            np.savetxt(f"./trainhistory/{self.model_type}" + "accuracy_psnr.txt", cust_hist.accuracy_psnr, fmt="%s")
-            np.savetxt(f"./trainhistory/{self.model_type}" + "accuracy_ssim.txt", cust_hist.accuracy_ssim, fmt="%s")
+            np.savetxt(f"./trainhistory/{self.model_type}/" + "train_loss.txt", cust_hist.train_loss, fmt="%s")
+            np.savetxt(f"./trainhistory/{self.model_type}/" + "val_loss.txt", cust_hist.val_loss, fmt="%s")
+            np.savetxt(f"./trainhistory/{self.model_type}/" + "train_acc.txt", cust_hist.train_acc, fmt="%s")
+            np.savetxt(f"./trainhistory/{self.model_type}/" + "val_acc.txt", cust_hist.val_acc, fmt="%s")
+            np.savetxt(f"./trainhistory/{self.model_type}/" + "accuracy_psnr.txt", cust_hist.accuracy_psnr, fmt="%s")
+            np.savetxt(f"./trainhistory/{self.model_type}/" + "accuracy_ssim.txt", cust_hist.accuracy_ssim, fmt="%s")
 
         return self.model
 
